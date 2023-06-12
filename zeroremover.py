@@ -31,13 +31,13 @@ def version1(df):
 
 
 def version2(df):
-    newDF = df.applymap(lambda x: 1 if isinstance(x, float) and x != 0.0 else x)
-    first_entries = newDF.iloc[0]
-    rename_dict = {col: entry for col, entry in zip(newDF.columns, first_entries)}
-    newDF = newDF.rename(columns=rename_dict).drop(0)
-    newDF = newDF.groupby(newDF.columns, axis=1).sum()
-    newDF = newDF.drop(newDF.columns[0], axis=1).max(axis = 1)
-    row_numbers = newDF[newDF >= saveMinimum].dropna(how='all').index.tolist()
+    newDF = df.applymap(lambda x: 1 if isinstance(x, float) and x != 0.0 else x) #changes all non-zero numerics to one
+    first_entries = newDF.iloc[0] #helps label the code with the first row in my dataset
+    rename_dict = {col: entry for col, entry in zip(newDF.columns, first_entries)} #renames the columns
+    newDF = newDF.rename(columns=rename_dict).drop(0) #drops unnecessary data
+    newDF = newDF.groupby(newDF.columns, axis=1).sum() #groups all columns with the same type. this is our replicate type
+    newDF = newDF.drop(newDF.columns[0], axis=1).max(axis = 1) #finding out max count per group in each row
+    row_numbers = newDF[newDF >= saveMinimum].dropna(how='all').index.tolist() #getting rows that we want
     newDF = df.iloc[row_numbers]
     return newDF
 
@@ -45,3 +45,4 @@ def version2(df):
 #calling version 1. feel free to swap this out. 
 print(version1(df))
 
+version1(df).to_csv('samplezeroremover.csv')
